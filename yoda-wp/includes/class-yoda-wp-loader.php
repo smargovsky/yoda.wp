@@ -6,8 +6,8 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/includes
+ * @package    Yoda_WP
+ * @subpackage Yoda_WP/includes
  */
 
 /**
@@ -17,11 +17,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/includes
- * @author     Your Name <email@example.com>
+ * @package    Yoda_WP
+ * @subpackage Yoda_WP/includes
+ * @author     Serge Margovsky <smargovsky@gmail.com>
  */
-class Plugin_Name_Loader {
+class Yoda_WP_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.
