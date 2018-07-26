@@ -13,11 +13,11 @@
  * @package           Yoda_WP
  *
  * @wordpress-plugin
- * Plugin Name:       WordPress Plugin Boilerplate
+ * Plugin Name:       YODA WP
  * Plugin URI:        http://example.com/yoda-wp-uri/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Your Online Directory Assistant - Create and manage UI guides and announcements for your web application... like a space wizard.
  * Version:           1.0.0
- * Author:            Serge Margovsky <serge.margovsky@genesys.com>
+ * Author:            Madison, WI UI Team
  * Author URI:        http://example.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt

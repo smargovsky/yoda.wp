@@ -78,6 +78,8 @@ class Yoda_WP {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->init_api();
+		$this->start_session();
 
 	}
 
@@ -122,8 +124,18 @@ class Yoda_WP {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-yoda-wp-public.php';
 
-		$this->loader = new Yoda_WP_Loader();
+		/**
+		 * The class responsible for registering all the API routes for all our Yoda guides and announcements.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-yoda-wp-api-routes.php';
 
+		/**
+		 * The class responsible for sanitizing user input
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-yoda-wp-sanitizer.php';
+
+		$this->loader = new Yoda_WP_Loader();
+		$this->sanitizer = new Yoda_WP_Sanitize();
 	}
 
 	/**
@@ -157,6 +169,19 @@ class Yoda_WP {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		$this->loader->add_action( 'init', $plugin_admin, 'new_cpt_announcement' );
+		$this->loader->add_action( 'add_meta_boxes_announcement', $plugin_admin, 'cpt_announcement_add_metaboxes' );
+		$this->loader->add_action( 'save_post_announcement', $plugin_admin, 'cpt_announcement_save', 10, 2 );
+		$this->loader->add_action( 'publish_announcement', $plugin_admin, 'cpt_announcement_publish', 10, 2 );
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'admin_notices', 10, 2 );
+
+		$this->loader->add_filter( 'post_updated_messages', $plugin_admin, 'cpt_announcement_updated_messages' );
+
+		$this->loader->add_action( 'init', $plugin_admin, 'new_cpt_wizard' );
+		$this->loader->add_action( 'add_meta_boxes_wizard', $plugin_admin, 'cpt_wizard_add_metaboxes' );
+		$this->loader->add_action( 'save_post_wizard', $plugin_admin, 'cpt_wizard_save', 10, 2 );
+		$this->loader->add_filter( 'post_updated_messages', $plugin_admin, 'cpt_wizard_updated_messages' );
+
 	}
 
 	/**
@@ -172,7 +197,27 @@ class Yoda_WP {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+	}
 
+	/**
+	 * Register all the API Routes.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function init_api() {
+
+		$plugin_api_routes = new Yoda_WP_API_Routes();
+
+		$this->loader->add_action( 'init', $plugin_api_routes, 'cors_init' );
+		$this->loader->add_action( 'rest_api_init', $plugin_api_routes, 'rest_api_init' );
+	}
+
+	private function start_session() {
+		// Use this to pass around errors on post save/publish.
+    if(!session_id()) {
+        session_start();
+    }
 	}
 
 	/**

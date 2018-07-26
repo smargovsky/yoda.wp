@@ -1,0 +1,6 @@
+{
+  "require": {
+    "cypresslab/gitelephant": "~2.0",
+    "yahnis-elsts/admin-notices": "~1.0"
+  }
+}

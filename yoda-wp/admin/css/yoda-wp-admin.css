@@ -2,3 +2,90 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.repeater {
+    box-sizing    : border-box;
+    margin-bottom   : 1em;
+    width       : 100%;
+}
+
+.repeater * {
+    box-sizing: border-box;
+}
+
+.repeater .handle,
+.repeater .repeater-content {
+    border    : 1px solid #ddd;
+    padding   : 0.75em;
+}
+
+.repeater .repeater-content {
+    border-top: none;
+}
+
+.repeater .handle {
+    background-color: #fafafa;
+    cursor      : move;
+    overflow    : auto;
+    position    : relative;
+    width       : 100%;
+}
+
+.repeater .btn-edit {
+    background    : none;
+    border      : none;
+    border-radius   : 0;
+    box-shadow    : none;
+    cursor      : pointer;
+    height      : 100%;
+    margin      : 0;
+    outline     : 0;
+    overflow    : hidden;
+    padding     : 0;
+    position    : absolute;
+    right       : 0;
+    top       : 0;
+    width       : 30px;
+}
+
+.repeater .toggle-arrow {
+    color           : #a0a5aa;
+    display         : inline-block;
+    font-family       : dashicons;
+    font-size         : 20px;
+    font-style        : normal;
+    font-weight       : 400px;
+    height          : 20px;
+    line-height       : 1;
+    text-align        : center;
+    text-decoration     : inherit;
+    transition        : 0.4s ease;
+    vertical-align      : top;
+    -webkit-font-smoothing  : antialiased;
+    width           : 20px;
+}
+
+.repeater .toggle-arrow:before {
+    content: "\f142";
+}
+
+.repeater .toggle-arrow.closed:before {
+    content: "\f140";
+}
+
+
+.repeater .link-remove {
+    color     : #a00;
+    text-decoration : none;
+}
+
+.repeater .link-remove:hover {
+    color       : red;
+    text-decoration : underline;
+}
+
+.element-selection-mode {
+    position: absolute;
+    right: 25px;
+    padding-top: 2px;
+}
