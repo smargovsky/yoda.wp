@@ -180,6 +180,7 @@ class Yoda_WP {
 		$this->loader->add_action( 'init', $plugin_admin, 'new_cpt_wizard' );
 		$this->loader->add_action( 'add_meta_boxes_wizard', $plugin_admin, 'cpt_wizard_add_metaboxes' );
 		$this->loader->add_action( 'save_post_wizard', $plugin_admin, 'cpt_wizard_save', 10, 2 );
+		$this->loader->add_action( 'publish_wizard', $plugin_admin, 'cpt_wizard_publish', 10, 2 );
 		$this->loader->add_filter( 'post_updated_messages', $plugin_admin, 'cpt_wizard_updated_messages' );
 
 	}

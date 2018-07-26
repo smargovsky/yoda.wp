@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6808cd0c2db37d239276e42f11d46431",
+    "content-hash": "986ebb4fb636be0963608711a0fbe899",
     "packages": [
         {
             "name": "cypresslab/gitelephant",
@@ -357,40 +357,54 @@
             "time": "2018-05-31T10:17:53+00:00"
         },
         {
-            "name": "yahnis-elsts/admin-notices",
-            "version": "v1.0",
+            "name": "vlucas/phpdotenv",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/YahnisElsts/admin-notices.git",
-                "reference": "04f54614e27b400f231fa63ea7dd3461440eea8d"
+                "url": "https://github.com/vlucas/phpdotenv.git",
+                "reference": "6ae3e2e6494bb5e58c2decadafc3de7f1453f70a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/YahnisElsts/admin-notices/zipball/04f54614e27b400f231fa63ea7dd3461440eea8d",
-                "reference": "04f54614e27b400f231fa63ea7dd3461440eea8d",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/6ae3e2e6494bb5e58c2decadafc3de7f1453f70a",
+                "reference": "6ae3e2e6494bb5e58c2decadafc3de7f1453f70a",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=5.3.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.35 || ^5.0"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
             "autoload": {
-                "files": [
-                    "AdminNotice.php"
-                ]
+                "psr-4": {
+                    "Dotenv\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT"
+                "BSD-3-Clause"
             ],
             "authors": [
                 {
-                    "name": "Yahnis Elsts",
-                    "email": "whiteshadow@w-shadow.com"
+                    "name": "Vance Lucas",
+                    "email": "vance@vancelucas.com",
+                    "homepage": "http://www.vancelucas.com"
                 }
             ],
-            "description": "A utility library for WordPress plugins that makes it easier to create admin notices. Supports persistently dismissible notices.",
-            "time": "2017-03-20T15:26:49+00:00"
+            "description": "Loads environment variables from `.env` to `getenv()`, `$_ENV` and `$_SERVER` automagically.",
+            "keywords": [
+                "dotenv",
+                "env",
+                "environment"
+            ],
+            "time": "2018-07-01T10:25:50+00:00"
         }
     ],
     "packages-dev": [],

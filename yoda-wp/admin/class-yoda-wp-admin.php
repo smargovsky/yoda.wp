@@ -1,5 +1,8 @@
 <?php
-use \YeEasyAdminNotices\V1\AdminNotice;
+require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
+$dotenv = new Dotenv\Dotenv(plugin_dir_path( dirname( __FILE__ ) ));
+$dotenv->load();
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -313,17 +316,22 @@ class Yoda_WP_Admin {
 		$gitPassword = urlencode(getenv('GIT_PASSWORD'));
 		$gitRepo = "https://{$gitUsername}:{$gitPassword}@bitbucket.org/inindca/yoda-translations";
 
+
+		if (!$gitUsername || !$gitPassword) {
+			return $this->display_message("Missing Bitbucket username or password.", 'error');
+		}
+
 		try {
 			$this->yoda_translations = new Yoda_WP_Translations($gitRepo);
 			$didUpdate = $this->yoda_translations->update_repository($post_id, $_POST['post_title'], $_POST['post_content']);
-
-			if ($didUpdate) {
-				$this->display_message('Yoda translations published to repository.', 'success');
-			} else {
-				$this->display_message('Yoda translations updated, but there were no changes to publish.', 'success');
-			}
 		} catch (Exception $e) {
-			$this->display_message($e->getMessage(), 'error');
+			return $this->display_message($e->getMessage(), 'error');
+		}
+
+		if ($didUpdate) {
+			$this->display_message('Yoda translations published to repository.', 'success');
+		} else {
+			$this->display_message('Yoda translations updated, but there were no changes to publish.', 'success');
 		}
 	}
 
@@ -519,7 +527,11 @@ class Yoda_WP_Admin {
         ) );
 
         $this->validate_meta( $_POST, $post_id, $object, $nonces, $fields);
-    }
+		}
+
+		function cpt_wizard_publish( $post_id, $object ) {
+			return $this->display_message("Wizard publish Git/Bitbucket integration has not been implemented. Oh no!", 'error');
+		}
 
 
     // ------------------------- Metaboxes --------------------------------
