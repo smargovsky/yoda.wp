@@ -64,7 +64,7 @@ class Yoda_WP_Translations {
     }
   }
 
-  public function update($post_id, $post_title, $post_content) {
+  public function update_repository($post_id, $post_title, $post_content) {
     $post = get_post($post_id);
     $localesFolder = plugin_dir_path( dirname( __FILE__ ) ) . self::TEMP_FOLDER . '/' . $this->localesDir;
     $englishJsonFilePath = $localesFolder . '/en.json';
