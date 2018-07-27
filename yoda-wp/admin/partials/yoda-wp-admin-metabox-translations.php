@@ -15,7 +15,6 @@ $this->meta = get_post_meta( $post->ID, 'translations' );
 $langs = [
     ['code' => 'da', 'display' => 'Danish'],
     ['code' => 'de', 'display' => 'German'],
-    ['code' => 'en', 'display' => 'English'],
     ['code' => 'es', 'display' => 'Spanish'],
     ['code' => 'fi', 'display' => 'Finnish'],
     ['code' => 'fr', 'display' => 'French'],
