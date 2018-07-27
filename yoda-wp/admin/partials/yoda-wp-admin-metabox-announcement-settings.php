@@ -35,22 +35,22 @@ include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-text.p
 
 // ----------------------------- announcement-type ---------------------------------------
 
-$setatts                                = array();
-$setatts['class']                       = 'widefat';
-$setatts['id']                          = 'announcement-type';
-$setatts['name']                        = 'announcement-type';
-$setatts['label']                       = 'Announcement Type';
-$i                                      = 0;
-$setatts['selections'][$i]['label']     = 'Toast';
-$setatts['selections'][$i]['value']     = 'toast';
+$atts                               = array();
+$atts['class']                      = 'widefat';
+$atts['id']                         = 'announcement-type';
+$atts['name']                       = 'announcement-type';
+$atts['label']                      = 'Announcement Type';
+$i                                  = 0;
+$atts['selections'][$i]['label']    = 'Toast';
+$atts['selections'][$i]['value']    = 'toast';
 $i++;
-$setatts['selections'][$i]['label']     = 'Pop up';
-$setatts['selections'][$i]['value']     = 'pop-up';
-$setatts['value']          = '';
-if ( ! empty( $this->meta[$setatts['id']][0] ) ) {
-    $setatts['value'] = $this->meta[$setatts['id']][0];
+$atts['selections'][$i]['label']    = 'Pop up';
+$atts['selections'][$i]['value']    = 'pop-up';
+$atts['value']                      = '';
+if ( ! empty( $this->meta[$atts['id']][0] ) ) {
+    $atts['value'] = $this->meta[$atts['id']][0];
 }
-apply_filters( $this->plugin_name . '-field-' . $setatts['id'], $setatts );
+apply_filters( $this->plugin_name . '-field-' . $atts['id'], $atts );
 ?><p><?php
 include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-select.php' );
 ?></p><?php

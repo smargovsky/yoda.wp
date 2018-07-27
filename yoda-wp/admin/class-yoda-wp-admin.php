@@ -325,8 +325,8 @@ class Yoda_WP_Admin {
         $regions = array('us-east-1', 'eu-west-1', 'eu-central-1', 'ap-southeast-2', 'ap-northeast-1');
         foreach ($regions as $region) {
             $key = 'announcement-region-' . $region;
-            if (property_exists($_POST, $key)) {
-                array_push($_POST['announcement-region'], array($key => $_POST[$key]));
+            if (array_key_exists($key, $_POST)) {
+                $_POST['announcement-region'][$region] = $_POST[$key];
             }
         }
 
@@ -610,7 +610,6 @@ class Yoda_WP_Admin {
 						$new_value[$i][$field_name] = $field[$i];
 					} // foreach $clean
 				} // for
-                error_log("******** REPEATER VALUES FOR ".$name." >>>>>> " . print_r($new_value, true));
 			} else {
 				$new_value = $this->sanitizer( $type, $posted[$name] ?? null );
 			}

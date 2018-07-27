@@ -95,7 +95,8 @@
   $('#announcement-type').change(function() {
     var value = $( this ).val();
     if (value === 'toast') {
-      $('#announcement-selector').val().prop("disabled", true).addClass("ui-state-disabled");
+      $('#announcement-selector').val();
+      $('#announcement-selector').prop("disabled", true).addClass("ui-state-disabled");
     } else if (value === 'pop-up') {
       $('#announcement-selector').prop("disabled", false).removeClass("ui-state-disabled");
     }

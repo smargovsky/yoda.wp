@@ -18,11 +18,10 @@ wp_nonce_field( $this->plugin_name, 'announcement-targeting' );
 
 $regions = array('us-east-1', 'eu-west-1', 'eu-central-1', 'ap-southeast-2', 'ap-northeast-1');
 if ( ! empty( $this->meta['announcement-region'][0] ) ) {
-    $value = maybe_unserialize($this->meta['announcement-region'][0]);
+    $value = maybe_unserialize( unserialize($this->meta['announcement-region'][0]) );
 } else {
     $value = array();
 }
-
 foreach ($regions as $region) {
     $atts                   = array();
     $atts['class']          = '';
@@ -32,7 +31,7 @@ foreach ($regions as $region) {
     $atts['name']           = 'announcement-region-' . $region;
     $atts['placeholder']    = '';
     $atts['type']           = 'checkbox';
-    $atts['value']          = property_exists($value, $region) ? $value[$region] : 0;
+    $atts['value']          = array_key_exists($region, $value) ? $value[$region] : 0;
 
     apply_filters( $this->plugin_name . '-field-' . $atts['id'], $atts );
     ?><p><?php
