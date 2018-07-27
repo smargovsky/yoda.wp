@@ -14,6 +14,8 @@ $this->meta = get_post_custom( $post->ID );
 
 wp_nonce_field( $this->plugin_name, 'announcement-settings' );
 
+// --------------------------- announcement-url -------------------------------------
+
 $atts                   = array();
 $atts['class']          = 'widefat';
 $atts['description']    = '';
@@ -31,22 +33,29 @@ apply_filters( $this->plugin_name . '-field-' . $atts['name'], $atts );
 include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-text.php' );
 ?></p><?php
 
-$atts                   = array();
-$atts['class']          = 'widefat';
-$atts['description']    = '';
-$atts['id']             = 'announcement-permissions';
-$atts['label']          = 'Permissions to Show To';
-$atts['name']           = 'announcement-permissions';
-$atts['placeholder']    = '';
-$atts['type']           = 'text';
-$atts['value']          = '';
-if ( ! empty( $this->meta[$atts['id']][0] ) ) {
-    $atts['value'] = $this->meta[$atts['id']][0];
+// ----------------------------- announcement-type ---------------------------------------
+
+$setatts                                = array();
+$setatts['class']                       = 'widefat';
+$setatts['id']                          = 'announcement-type';
+$setatts['name']                        = 'announcement-type';
+$setatts['label']                       = 'Announcement Type';
+$i                                      = 0;
+$setatts['selections'][$i]['label']     = 'Toast';
+$setatts['selections'][$i]['value']     = 'toast';
+$i++;
+$setatts['selections'][$i]['label']     = 'Pop up';
+$setatts['selections'][$i]['value']     = 'pop-up';
+$setatts['value']          = '';
+if ( ! empty( $this->meta[$setatts['id']][0] ) ) {
+    $setatts['value'] = $this->meta[$setatts['id']][0];
 }
-apply_filters( $this->plugin_name . '-field-' . $atts['id'], $atts );
+apply_filters( $this->plugin_name . '-field-' . $setatts['id'], $setatts );
 ?><p><?php
-include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-text.php' );
+include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-select.php' );
 ?></p><?php
+
+// --------------------------- announcement-selector -------------------------------------
 
 $atts                   = array();
 $atts['class']          = 'widefat  element-selector';
@@ -66,6 +75,8 @@ apply_filters( $this->plugin_name . '-field-' . $atts['id'], $atts );
 include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-text.php' );
 ?></p><?php
 
+// --------------------------- announcement-show-once -------------------------------------
+
 $atts                   = array();
 $atts['class']          = '';
 $atts['description']    = '';
@@ -82,6 +93,7 @@ apply_filters( $this->plugin_name . '-field-' . $atts['id'], $atts );
 ?><p><?php
 include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-checkbox.php' );
 ?></p>
+
 <div id="dialog-for-iframe">
     <iframe id="iframe-for-element-selection" name="iframe-for-element-selection" seamless="seamless" width='800' height='800'></iframe>
 </div>

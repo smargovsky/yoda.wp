@@ -88,6 +88,20 @@
 	});
 
   /**
+    * Hide selector if type is toast
+    *
+    */
+
+  $('#announcement-type').change(function() {
+    var value = $( this ).val();
+    if (value === 'toast') {
+      $('#announcement-selector').val().prop("disabled", true).addClass("ui-state-disabled");
+    } else if (value === 'pop-up') {
+      $('#announcement-selector').prop("disabled", false).removeClass("ui-state-disabled");
+    }
+  });
+
+  /**
    * Dialogue for Iframe!
    */
   var selectorInput = null;
@@ -144,8 +158,6 @@
         var { source, data } = event.originalEvent;
         if ( data.yodaMessage ) {
           if ( data.yodaMessage === 'iframe-ready' ) {
-            console.log(' ********* POST MESSAGE!!!!!', data);
-
             // clear any pops
             var message = { 'yodaMessage': 'clear-pops' };
             $('#iframe-for-element-selection')[0].contentWindow.postMessage(message, '*');
@@ -153,7 +165,6 @@
             $('#selection-mode').prop("disabled", false).removeClass("ui-state-disabled");
             $('#save-selection').prop("disabled", true).addClass("ui-state-disabled");
           } else if ( data.yodaMessage === 'return-selector' ) {
-            console.log(' ********* POST MESSAGE!!!!!', data);
             $('#save-selection').prop("disabled", false).removeClass("ui-state-disabled");
 
             // get correct element for repeater
@@ -174,9 +185,11 @@
   });
   // bind a button or a link to open the dialog
   $('.element-selection-mode').click(function(e) {
+    if ($('#announcement-selector').prop("disabled")) {
+      return;
+    }
     e.preventDefault();
     selectorInput = $(e.target).siblings('input')[0];
-    console.log(' ********* TARGET >>>>>>>>>> ', selectorInput);
     $('#dialog-for-iframe').dialog('open');
   });
 
