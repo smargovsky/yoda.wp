@@ -1,6 +1,9 @@
 <?php
   require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
+  require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
   use GitElephant\Repository;
+  $dotenv = new Dotenv\Dotenv(plugin_dir_path( dirname( __FILE__ ) ));
+  $dotenv->load();
 
 /**
  * Used to handle all Git/Bitbucket translations operations
@@ -22,8 +25,10 @@
  */
 class Yoda_WP_Translations {
 
-  const TEMP_FOLDER = 'tmp/yoda-translations-repo';
+  const REPO_DIR = 'yoda-translations-repo';
   const LOCALES_DEFAULT_DIR = 'locales';
+  const GIT_NAME = 'YODA.WP';
+  const GIT_EMAIL = 'yoda-wp@noreply.genesys.com';
 
   private $repository;
   private $localesDir;
@@ -36,13 +41,15 @@ class Yoda_WP_Translations {
 
   public function clone_repository($repositoryUrl) {
 
-    $tempFolder = plugin_dir_path( dirname( __FILE__ ) ) . self::TEMP_FOLDER;
+    $repoDirPath = $this->get_repo_dir();
 
-    if (!file_exists($tempFolder)) {
-      mkdir($tempFolder, 0755, true);
+    if (!file_exists($repoDirPath)) {
+      mkdir($repoDirPath, 0755, true);
     }
 
-    $this->repository = new Repository($tempFolder);
+    $this->repository = new Repository($repoDirPath);
+    $this->repository->addGlobalConfig('user.name', self::GIT_NAME);
+    $this->repository->addGlobalConfig('user.email', self::GIT_EMAIL);
 
     $repoExists = false;
     try {
@@ -52,29 +59,39 @@ class Yoda_WP_Translations {
       $repoExists = false;
     }
 
+    if (!$repoExists) {
+      $this->repository->cloneFrom($repositoryUrl, $repoDirPath);
+    }
+
     try{
       $this->repository->pull(); // make sure we're up to date!
     } catch (Exception $e) {
-      error_log("BROKE ON REPO PULL, {$e->getMessage()}");
-      throw new Exception("BROKE ON REPO PULL, {$e->getMessage()}");
+      throw new Exception("YODA.WP had a problem pulling changes from the translations repository: {$e->getMessage()}");
     }
+  }
 
-    if (!$repoExists) {
-      $this->repository->cloneFrom($repositoryUrl, $tempFolder);
-    }
+  private function get_repo_dir() {
+    $upload = wp_upload_dir();
+    $upload_dir = $upload['basedir'];
+    return $upload_dir . '/' . self::REPO_DIR;
+  }
+
+  private function get_repo_locales_dir() {
+    return $this->get_repo_dir() . '/' . $this->localesDir;
   }
 
   public function update_repository($post_id, $post_title, $post_content) {
     $post = get_post($post_id);
-    $localesFolder = plugin_dir_path( dirname( __FILE__ ) ) . self::TEMP_FOLDER . '/' . $this->localesDir;
+    $localesFolder = $this->get_repo_locales_dir();
     $englishJsonFilePath = $localesFolder . '/en.json';
-
     $englishJsonString = file_get_contents($englishJsonFilePath);
+
     try {
       $englishJson = json_decode($englishJsonString, true);
     } catch (Exception $e) {
-      throw new Exception("There were issues decoding the en.json locale. Fix the Yoda git translations repository.");
-      // TODO - email/notify someone who cares to fix the en.json formatting
+      $message = "There were issues decoding the en.json locale. Fix the YODA.WP git translations repository.";
+      throw new Exception($message);
+      $this->sendEmail('Translations file issue', $message);
     }
 
     $englishJson[$post_id] = [
@@ -89,12 +106,7 @@ class Yoda_WP_Translations {
     }
 
     file_put_contents($englishJsonFilePath, $englishJsonString);
-
-    try {
-      $didCommitChanges = $this->commit_repo_changes($post->post_type, $post_id);
-    } catch (Exception $e) {
-      throw new Exception("There was a problem with staging/committing/pushing to the Yoda git translations repository. {$e->getMessage}");
-    }
+    $didCommitChanges = $this->commit_repo_changes($post->post_type, $post_id);
 
     return $didCommitChanges;
   }
@@ -108,14 +120,24 @@ class Yoda_WP_Translations {
 
     $commit_message = "English language updated via Wordpress for {$post_type} {$post_id}.";
     $this->repository->stage();
-    $commit = $this->repository->commit($commit_message);
+    $this->repository->commit($commit_message);
     $this->repository->push();
 
     return $this->repository->getStatus();
   }
 
+  private function sendEmail($subject, $body) {
+    $translations_contact_email = getenv('TRANSLATIONS_ISSUE_CONTACT_EMAIL');
+    $to = $translations_contact_email;
+    $subject = '[YODA.WP] ' . $subject;
+    $body = $body;
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+
+    wp_mail( $to, $subject, $body, $headers );
+  }
+
   public function sync_post_translations() {
-    $localesFolder = plugin_dir_path( dirname( __FILE__ ) ) . self::TEMP_FOLDER . '/' . $this->localesDir;
+    $localesFolder = $this->get_repo_locales_dir();
 
     $combinedJson = [];
 
@@ -125,14 +147,15 @@ class Yoda_WP_Translations {
       $jsonString = file_get_contents($file);
 
       if ($lang == 'en') {
-        continue; // skip sync english translations - they will be natively in the wordpress
+        continue; // skip sync english translations - they will be natively in the wordpress post
       }
 
       try {
         $langJson = json_decode($jsonString, true);
       } catch (Exception $e) {
-        throw new Exception("There were issues decoding the {$lang} locale. Fix the Yoda git translations repository.");
-        // TODO - email/notify someone who cares to fix the en.json formatting
+        $message = "There were issues decoding the {$lang} locale. Fix the YODA.WP git translations repository.";
+        throw new Exception($message);
+        $this->sendEmail('Translations file issue', $message);
       }
 
       foreach($langJson as $post_id => $post){
@@ -142,7 +165,6 @@ class Yoda_WP_Translations {
 
         $combinedJson[$post_id][$lang] = $post;
       }
-
     }
 
     foreach ($combinedJson as $post_id => $translations) {
