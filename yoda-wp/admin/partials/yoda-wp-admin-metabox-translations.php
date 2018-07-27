@@ -37,11 +37,13 @@ $availableLangs = is_array($this->db::getGuideAvailableTranslations($post)) ? ar
 foreach ($langs as $lang) {
     if ( in_array($lang['code'], $availableLangs) ) { ?>
         <p>
-            <span class="dashicons dashicons-thumbs-up" style="color: #5cb85c"></span><strong style="color:#5cb85c"> <?php echo $lang['display']; ?> </strong>
+            <span class="dashicons dashicons-yes" style="color: #5cb85c"></span>
+            <span style="color:#5cb85c"> <?php echo $lang['display']; ?> </span>
         </p>
     <?php } else { ?>
         <p>
-            <span class="dashicons dashicons-thumbs-down" style="color: red"></span><strong style="color:red"> <?php echo $lang['display']; ?> </strong>
+            <span class="dashicons dashicons-no" style="color: gray"></span>
+            <span style="color:gray"> <?php echo $lang['display']; ?> </span>
         </p>
     <?php }
 }
