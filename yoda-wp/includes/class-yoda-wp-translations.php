@@ -24,8 +24,6 @@ class Yoda_WP_Translations {
 
   const TEMP_FOLDER = 'tmp/yoda-translations-repo';
   const LOCALES_DEFAULT_DIR = 'locales';
-  const GIT_NAME = 'Yoda WP';
-  const GIT_EMAIL = 'yoda-wp@noreply.genesys.com';
 
   private $repository;
   private $localesDir;
@@ -46,9 +44,6 @@ class Yoda_WP_Translations {
 
     $this->repository = new Repository($tempFolder);
 
-    $this->repository->addGlobalConfig('user.name', self::GIT_NAME);
-    $this->repository->addGlobalConfig('user.email', self::GIT_EMAIL);
-
     $repoExists = false;
     try {
       $this->repository->getStatus();
@@ -57,20 +52,19 @@ class Yoda_WP_Translations {
       $repoExists = false;
     }
 
+    try{
+      $this->repository->pull(); // make sure we're up to date!
+    } catch (Exception $e) {
+      error_log("BROKE ON REPO PULL, {$e->getMessage()}");
+      throw new Exception("BROKE ON REPO PULL, {$e->getMessage()}");
+    }
 
     if (!$repoExists) {
       $this->repository->cloneFrom($repositoryUrl, $tempFolder);
-    } else {
-      try{
-        $this->repository->pull(); // make sure we're up to date!
-      } catch (Exception $e) {
-        error_log("BROKE ON REPO PULL, {$e->getMessage()}");
-        throw new Exception("BROKE ON REPO PULL, {$e->getMessage()}");
-      }
     }
   }
 
-  public function update_repository($post_id, $post_title, $post_content) {
+  public function update($post_id, $post_title, $post_content) {
     $post = get_post($post_id);
     $localesFolder = plugin_dir_path( dirname( __FILE__ ) ) . self::TEMP_FOLDER . '/' . $this->localesDir;
     $englishJsonFilePath = $localesFolder . '/en.json';
@@ -96,12 +90,11 @@ class Yoda_WP_Translations {
 
     file_put_contents($englishJsonFilePath, $englishJsonString);
 
-    $didCommitChanges = $this->commit_repo_changes($post->post_type, $post_id);
-    // try {
-    //   $didCommitChanges = $this->commit_repo_changes($post->post_type, $post_id);
-    // } catch (Exception $e) {
-    //   throw new Exception("There was a problem with staging/committing/pushing to the Yoda git translations repository. {$e->getMessage}");
-    // }
+    try {
+      $didCommitChanges = $this->commit_repo_changes($post->post_type, $post_id);
+    } catch (Exception $e) {
+      throw new Exception("There was a problem with staging/committing/pushing to the Yoda git translations repository. {$e->getMessage}");
+    }
 
     return $didCommitChanges;
   }
@@ -115,16 +108,8 @@ class Yoda_WP_Translations {
 
     $commit_message = "English language updated via Wordpress for {$post_type} {$post_id}.";
     $this->repository->stage();
-    // error_log('-------------------------------[stage done]-----------------------------------------');
-    try {
-      $commit = $this->repository->commit($commit_message);
-    } catch (Exception $e) {
-      $this->repository->reset('', ['--hard']); // it blew up - just reset everyone for the next attempt
-      throw new Exception("There was a problem committing the Yoda git translations changes. {$e->getMessage()}");
-    }
-    // error_log('-------------------------------[commit done]-----------------------------------------');
+    $commit = $this->repository->commit($commit_message);
     $this->repository->push();
-    // error_log('-------------------------------[push done]-----------------------------------------');
 
     return $this->repository->getStatus();
   }

@@ -279,6 +279,17 @@ class Yoda_WP_Admin {
 			)
 		);
         add_meta_box(
+            'targeting',
+            apply_filters( $this->plugin_name . '-metabox-targeting', esc_html__( 'Targeting', 'yoda-wp' ) ),
+            array( $this, 'metabox' ),
+            'announcement',
+            'side',
+            'default',
+            array(
+                'file' => 'targeting'
+            )
+        );
+        add_meta_box(
             'translations',
             apply_filters( $this->plugin_name . '-metabox-translations', esc_html__( 'Translations', 'yoda-wp' ) ),
             array( $this, 'metabox' ),
@@ -297,13 +308,27 @@ class Yoda_WP_Admin {
         if ( 'auto-draft' === get_post_status( $post_id ) ) { return $post_id; }
         if ( 'trash' === get_post_status( $post_id ) ) { return $post_id; }
 
-		$nonces = array('announcement-settings');
+		$nonces = array('announcement-settings', 'announcement-targeting');
 
 		$fields = array();
 		$fields[] = array('announcement-url', 'text');
-		$fields[] = array('announcement-permissions', 'text');
         $fields[] = array('announcement-selector', 'text');
 		$fields[] = array('announcement-show-once', 'checkbox');
+        $fields[] = array('announcement-type', 'select');
+
+        $fields[] = array('announcement-permissions', 'text');
+        $fields[] = array('announcement-feature-toggles', 'text');
+        $fields[] = array('announcement-region', 'array');
+
+        // take all announcement-region-* and combine into array announcement-region
+        $_POST['announcement-region'] = array();
+        $regions = array('us-east-1', 'eu-west-1', 'eu-central-1', 'ap-southeast-2', 'ap-northeast-1');
+        foreach ($regions as $region) {
+            $key = 'announcement-region-' . $region;
+            if (property_exists($_POST, $key)) {
+                array_push($_POST['announcement-region'], array($key => $_POST[$key]));
+            }
+        }
 
 		$this->validate_meta( $_POST, $post_id, $object, $nonces, $fields);
 	}

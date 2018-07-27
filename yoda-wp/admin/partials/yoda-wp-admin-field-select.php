@@ -8,7 +8,7 @@
  * @subpackage Yoda_WP/admin/partials
  */
 if ( ! empty( $atts['label'] ) ) {
-    ?><label for="<?php echo esc_attr( $atts['id'] ); ?>"><?php esc_html_e( $atts['label'], 'employees' ); ?>: </label><?php
+    ?><label for="<?php echo esc_attr( $atts['id'] ); ?>"><?php esc_html_e( $atts['label'], 'yoda-wp' ); ?>: </label><?php
 }
 ?><select
     aria-label="<?php esc_attr( _e( $atts['aria'], 'yoda-wp' ) ); ?>"
