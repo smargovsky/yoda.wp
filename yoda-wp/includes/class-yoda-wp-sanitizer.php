@@ -71,6 +71,7 @@ class Yoda_WP_Sanitize {
             case 'tel'              : $sanitized = $this->sanitize_phone( $this->data ); break;
             case 'textarea'         : $sanitized = esc_textarea( $this->data ); break;
             case 'url'              : $sanitized = esc_url( $this->data ); break;
+            case 'array'            : $sanitized = maybe_serialize( $this->data ); break;
         } // switch
         /**
          * Add additional santization after the default .
