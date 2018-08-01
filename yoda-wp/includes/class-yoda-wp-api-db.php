@@ -267,7 +267,7 @@ class Yoda_WP_API_DB {
 							'type' => $x['post_type'],
 							'displayType' => isset($x['meta']['announcement-type']) ? current($x['meta']['announcement-type']) : '',
 							'meta' => [
-								'featureToggles' => isset($x['meta']['announcement-feature-toggles']) ? current($x['meta']['announcement-feature-toggles']) : '',
+								'featureToggles' => $this->getFeatureTogglesFromMeta($x['meta'], 'announcement'),
 								'regions' => $this->getRegionFromMeta($x['meta'], 'announcement'),
 								'permissions' => $this->getPermissionsFromMeta($x['meta'], 'announcement')
 							],
@@ -313,6 +313,11 @@ class Yoda_WP_API_DB {
 	private function getPermissionsFromMeta($meta, $type) {
 		$permissionsString = isset($meta["{$type}-permissions"]) ? current($meta["{$type}-permissions"]) : [];
 		return strlen($permissionsString) ? preg_split("/[\s,]+/", $permissionsString) : [];
+	}
+
+	private function getFeatureTogglesFromMeta($meta, $type) {
+		$featureTogglesString = isset($meta["{$type}-feature-toggles"]) ? current($meta["{$type}-feature-toggles"]) : [];
+		return strlen($featureTogglesString) ? preg_split("/[\s,]+/", $featureTogglesString) : [];
 	}
 
 	private function queryPosts($options = [], $with_meta = false) {
