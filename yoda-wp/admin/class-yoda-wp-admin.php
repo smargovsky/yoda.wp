@@ -120,7 +120,6 @@ class Yoda_WP_Admin {
 	}
 
 
-
 	const TABLE_GUIDES_COMPLETED = 'yoda_guides_completed';
 
 	/**
