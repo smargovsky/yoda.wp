@@ -1,9 +1,5 @@
 <?php
   require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
-  require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
-  use GitElephant\Repository;
-  $dotenv = new Dotenv\Dotenv(plugin_dir_path( dirname( __FILE__ ) ));
-  $dotenv->load();
 
 /**
  * Used to handle all Git/Bitbucket translations operations
@@ -36,7 +32,6 @@ class Yoda_WP_Translations {
 	public function __construct($repositoryUrl, $localesDir = false) {
     $this->localesDir = $localesDir ? $localesDir : self::LOCALES_DEFAULT_DIR;
     $this->clone_repository($repositoryUrl);
-
 	}
 
   public function clone_repository($repositoryUrl) {
@@ -47,7 +42,7 @@ class Yoda_WP_Translations {
       mkdir($repoDirPath, 0755, true);
     }
 
-    $this->repository = new Repository($repoDirPath);
+    $this->repository = new GitElephant\Repository($repoDirPath);
     $this->repository->addGlobalConfig('user.name', self::GIT_NAME);
     $this->repository->addGlobalConfig('user.email', self::GIT_EMAIL);
 
@@ -169,6 +164,7 @@ class Yoda_WP_Translations {
 
     foreach ($combinedJson as $post_id => $translations) {
       update_post_meta( $post_id, 'translations', $translations );
+      update_post_meta( $post_id, 'translations-last-sync', gmdate(DateTime::ISO8601, time()) );
     }
 
     return true;

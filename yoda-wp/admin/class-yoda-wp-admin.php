@@ -1,7 +1,5 @@
 <?php
 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
-$dotenv = new Dotenv\Dotenv(plugin_dir_path( dirname( __FILE__ ) ));
-$dotenv->load();
 
 /**
  * The admin-specific functionality of the plugin.
@@ -119,38 +117,38 @@ class Yoda_WP_Admin {
         $return = $sanitizer->clean();
         unset( $sanitizer );
         return $return;
+	}
+
+
+
+	const TABLE_GUIDES_COMPLETED = 'yoda_guides_completed';
+
+	/**
+	 * Create Yoda Tables
+	 *
+	 * @since 	1.0.0
+	 * @access 	public
+	 */
+	public static function createTables() {
+		global $wpdb;
+
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$table_name = $wpdb->prefix . self::TABLE_GUIDES_COMPLETED;
+
+		if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+			$sql = "CREATE TABLE $table_name (
+				id mediumint(9) NOT NULL AUTO_INCREMENT,
+				guide_id mediumint(9) NOT NULL,
+				user_id varchar(100) NOT NULL,
+				completed_on datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+				PRIMARY KEY  (id)
+			) $charset_collate;";
+
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			dbDelta( $sql );
 		}
-
-
-
-		public const TABLE_GUIDES_COMPLETED = 'yoda_guides_completed';
-
-		/**
-		 * Create Yoda Tables
-		 *
-		 * @since 	1.0.0
-		 * @access 	public
-		 */
-		public static function createTables() {
-			global $wpdb;
-
-			$charset_collate = $wpdb->get_charset_collate();
-
-			$table_name = $wpdb->prefix . self::TABLE_GUIDES_COMPLETED;
-
-			if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-				$sql = "CREATE TABLE $table_name (
-					id mediumint(9) NOT NULL AUTO_INCREMENT,
-					guide_id mediumint(9) NOT NULL,
-					user_id varchar(100) NOT NULL,
-					completed_on datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-					PRIMARY KEY  (id)
-				) $charset_collate;";
-
-				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-				dbDelta( $sql );
-			}
-		}
+	}
 
 // --------------------------- ANNOUNCEMENTS -------------------------------------
 
@@ -343,20 +341,20 @@ class Yoda_WP_Admin {
 
 
 		if (!$gitUsername || !$gitPassword) {
-			return $this->display_message("Missing Bitbucket username or password.", 'error');
+			return Yoda_WP::display_session_message("Missing Bitbucket username or password.", 'error');
 		}
 
 		try {
 			$this->yoda_translations = new Yoda_WP_Translations($gitRepo);
 			$didUpdate = $this->yoda_translations->update_repository($post_id, $_POST['post_title'], $_POST['post_content']);
 		} catch (Exception $e) {
-			return $this->display_message($e->getMessage(), 'error');
+			return Yoda_WP::display_session_message($e->getMessage(), 'error');
 		}
 
 		if ($didUpdate) {
-			$this->display_message('Yoda translations published to repository.', 'success');
+			Yoda_WP::display_session_message('Yoda translations published to repository.', 'success');
 		} else {
-			$this->display_message('Yoda translations updated, but there were no changes to publish.', 'success');
+			Yoda_WP::display_session_message('Yoda translations updated, but there were no changes to publish.', 'success');
 		}
 	}
 
@@ -366,19 +364,13 @@ class Yoda_WP_Admin {
 		}
 		$notice = $_SESSION['yoda-session-notice'];
 		?>
-		<div class="notice-<?php echo $notice['type']; ?> notice">
+		<div class="notice-<?php echo $notice['type']; ?> notice is-dismissible">
 			<p><?php _e( $notice['message'], 'yoda_translations_notice' ); ?></p>
 		</div>
 		<?php
 		$_SESSION['yoda-session-notice'] = false;
 	}
 
-	private function display_message($message, $type) {
-		$_SESSION['yoda-session-notice'] = [
-			'message' => $message,
-			'type' => $type
-		];
-	}
 
     // --------------------------- WIZARDS -------------------------------------
 
@@ -555,7 +547,7 @@ class Yoda_WP_Admin {
 		}
 
 		function cpt_wizard_publish( $post_id, $object ) {
-			return $this->display_message("Wizard publish Git/Bitbucket integration has not been implemented. Oh no!", 'error');
+			return Yoda_WP::display_session_message("Wizard publish Git/Bitbucket integration has not been implemented. Oh no!", 'error');
 		}
 
 

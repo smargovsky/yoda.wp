@@ -1,4 +1,5 @@
 <?php
+require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
 
 /**
  * The file that defines the core plugin class
@@ -80,7 +81,7 @@ class Yoda_WP {
 		$this->define_public_hooks();
 		$this->init_api();
 		$this->start_session();
-
+		$this->load_env();
 	}
 
 	/**
@@ -259,6 +260,32 @@ class Yoda_WP {
 	 */
 	public function get_version() {
 		return $this->version;
+	}
+
+	public static function display_session_message($message, $type) {
+		$_SESSION['yoda-session-notice'] = [
+			'message' => $message,
+			'type' => $type
+		];
+	}
+
+	public static function display_notice_message($message, $type) {
+		add_action( 'admin_notices', function() use ($message, $type) {
+			?>
+			<div class="notice notice-<?php echo $type; ?> is-dismissible">
+				<p><?php _e( $message, 'yoda-text-notice' ); ?></p>
+			</div>
+			<?php
+		} );
+	}
+
+	public static function load_env() {
+		try {
+			$dotenv = new Dotenv\Dotenv(plugin_dir_path( dirname( __FILE__ ) ));
+			$dotenv->load();
+		} catch  (Dotenv\Exception\InvalidPathException $e) {
+			Yoda_WP::display_notice_message('Uhoh, YODA is missing its .env file!', 'error');
+		}
 	}
 
 }

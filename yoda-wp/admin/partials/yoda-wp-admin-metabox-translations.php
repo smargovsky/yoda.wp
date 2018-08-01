@@ -11,6 +11,7 @@ global $post;
 if ( empty( $post ) ) { return; }
 if ( 'wizard' != $post->post_type && 'announcement' != $post->post_type ) { return; }
 $this->meta = get_post_meta( $post->ID, 'translations' );
+$this->meta = get_post_meta( $post->ID, 'translations-last-sync' ) || 'never';
 
 $langs = [
     ['code' => 'da', 'display' => 'Danish'],
@@ -47,3 +48,7 @@ foreach ($langs as $lang) {
         </p>
     <?php }
 }
+
+?>
+
+<hr/>

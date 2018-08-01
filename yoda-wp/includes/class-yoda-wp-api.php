@@ -1,7 +1,5 @@
 <?php
 	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
-  $dotenv = new Dotenv\Dotenv(plugin_dir_path( dirname( __FILE__ ) ));
-  $dotenv->load();
 
 /**
  * Callback function for all API requests.
