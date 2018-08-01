@@ -1,5 +1,4 @@
 <?php
-	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
 
 /**
  * Callback function for all API requests.

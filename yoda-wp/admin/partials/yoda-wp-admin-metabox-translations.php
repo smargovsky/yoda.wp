@@ -11,7 +11,8 @@ global $post;
 if ( empty( $post ) ) { return; }
 if ( 'wizard' != $post->post_type && 'announcement' != $post->post_type ) { return; }
 $this->meta = get_post_meta( $post->ID, 'translations' );
-$this->meta = get_post_meta( $post->ID, 'translations-last-sync' ) || 'never';
+$this->meta_last_sync = get_post_meta( $post->ID, 'translations-last-sync' );
+$this->meta_last_sync = $this->meta_last_sync ? 'last updated ' . Yoda_WP_Util::time_elapsed_string(current($this->meta_last_sync)) : 'translations have not been updated';
 
 $langs = [
     ['code' => 'da', 'display' => 'Danish'],
@@ -52,3 +53,5 @@ foreach ($langs as $lang) {
 ?>
 
 <hr/>
+
+<div style="text-align:center;opacity:.7;font-size: .75em;"><em><?php echo $this->meta_last_sync ?></em></div>

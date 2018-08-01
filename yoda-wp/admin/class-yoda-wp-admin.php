@@ -1,5 +1,4 @@
 <?php
-require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendor/autoload.php';
 
 /**
  * The admin-specific functionality of the plugin.
@@ -59,6 +58,7 @@ class Yoda_WP_Admin {
 		$this->db = new Yoda_WP_API_DB();
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-yoda-wp-translations.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-yoda-wp-util.php';
 	}
 
 	/**
