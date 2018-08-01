@@ -265,6 +265,12 @@ class Yoda_WP_API_DB {
 							'content' => isset($x['post_content']) ? $x['post_content'] : '',
 							]],
 							'type' => $x['post_type'],
+							'displayType' => isset($x['meta']['announcement-type']) ? current($x['meta']['announcement-type']) : '',
+							'meta' => [
+								'featureToggles' => isset($x['meta']['announcement-feature-toggles']) ? current($x['meta']['announcement-feature-toggles']) : '',
+								'regions' => $this->getRegionFromMeta($x['meta'], 'announcement'),
+								'permissions' => $this->getPermissionsFromMeta($x['meta'], 'announcement')
+							],
 							'created' => $x['post_date'],
 						'updated' => $x['post_modified'],
 					];
@@ -296,6 +302,17 @@ class Yoda_WP_API_DB {
 					break;
 			}
 		}, $posts);
+	}
+
+	private function getRegionFromMeta($meta, $type) {
+		$regionMeta = isset($meta["{$type}-region"]) ? unserialize(current($meta["{$type}-region"])) : false;
+		$regions = $regionMeta ? unserialize($regionMeta) : false;
+		return $regions ? array_keys($regions) : [];
+	}
+
+	private function getPermissionsFromMeta($meta, $type) {
+		$permissionsString = isset($meta["{$type}-permissions"]) ? current($meta["{$type}-permissions"]) : [];
+		return strlen($permissionsString) ? preg_split("/[\s,]+/", $permissionsString) : [];
 	}
 
 	private function queryPosts($options = [], $with_meta = false) {
