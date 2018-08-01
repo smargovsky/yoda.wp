@@ -123,7 +123,7 @@ class Yoda_WP_Admin {
 
 
 
-		public const TABLE_GUIDES_COMPLETED = 'yoda_guides_completed';
+		const TABLE_GUIDES_COMPLETED = 'yoda_guides_completed';
 
 		/**
 		 * Create Yoda Tables
