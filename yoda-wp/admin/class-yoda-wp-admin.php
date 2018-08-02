@@ -520,10 +520,6 @@ class Yoda_WP_Admin {
         $this->validate_meta( $_POST, $post_id, $object, $nonces, $fields);
 		}
 
-		function cpt_wizard_publish( $post_id, $object ) {
-			return Yoda_WP::display_session_message("Wizard publish Git/Bitbucket integration has not been implemented. Oh no!", 'error');
-		}
-
 
     // ------------------------- Metaboxes --------------------------------
 

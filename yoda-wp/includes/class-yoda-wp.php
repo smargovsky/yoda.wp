@@ -173,7 +173,7 @@ class Yoda_WP {
 		$this->loader->add_action( 'init', $plugin_admin, 'new_cpt_announcement' );
 		$this->loader->add_action( 'add_meta_boxes_announcement', $plugin_admin, 'cpt_announcement_add_metaboxes' );
 		$this->loader->add_action( 'save_post_announcement', $plugin_admin, 'cpt_announcement_save', 10, 2 );
-		$this->loader->add_action( 'publish_announcement', $plugin_admin, 'cpt_announcement_publish', 10, 2 );
+		// $this->loader->add_action( 'publish_announcement', $plugin_admin, 'cpt_announcement_publish', 10, 2 );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'admin_notices', 10, 2 );
 
 		$this->loader->add_filter( 'post_updated_messages', $plugin_admin, 'cpt_announcement_updated_messages' );
@@ -181,7 +181,7 @@ class Yoda_WP {
 		$this->loader->add_action( 'init', $plugin_admin, 'new_cpt_wizard' );
 		$this->loader->add_action( 'add_meta_boxes_wizard', $plugin_admin, 'cpt_wizard_add_metaboxes' );
 		$this->loader->add_action( 'save_post_wizard', $plugin_admin, 'cpt_wizard_save', 10, 2 );
-		$this->loader->add_action( 'publish_wizard', $plugin_admin, 'cpt_wizard_publish', 10, 2 );
+		// $this->loader->add_action( 'publish_wizard', $plugin_admin, 'cpt_wizard_publish', 10, 2 );
 		$this->loader->add_filter( 'post_updated_messages', $plugin_admin, 'cpt_wizard_updated_messages' );
 
 	}
