@@ -96,7 +96,7 @@ class Yoda_WP_API_Routes {
 		));
 
 		register_rest_route('api/v1', '/sync-translations/(?P<language>.*)', array(
-			'methods' => 'GET, POST',
+			'methods' => 'POST',
 			'callback' => [$this->api, 'sync_guide_translations']
 		));
 
