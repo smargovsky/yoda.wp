@@ -132,6 +132,50 @@ class Yoda_WP_API_DB {
 
 	}
 
+	public function get_guides_base_translations() {
+		$translations = [];
+
+		$query = [
+			'post_type' => ['announcement', 'wizard'],
+			'post_status' => 'publish',
+			'orderby' => 'ID',
+			'order' => 'ASC',
+		];
+
+		$guides = $this->queryPosts($query, true);
+
+		foreach($guides as $guide) {
+			$translations[$guide->ID] = [
+				'TITLE' => $guide->post_title,
+				'CONTENT' => $guide->post_content
+			];
+		}
+
+		return $translations;
+	}
+
+	public function sync_guide_translations($locale, $locale_translations) {
+
+		if ($locale == 'en' || $locale == 'en-us') {
+			return true; // skip english sync in case this happens accidentally
+		}
+
+		// TODO: Validate the $locale_translations data being posted somehow - maybe html validation?
+
+		foreach($locale_translations as $post_id => $updated_guide_translations){
+			$current_guide_translations_post_meta = current(get_post_meta( $post_id, 'translations' ));
+			$current_guide_translations = $current_guide_translations_post_meta ? $current_guide_translations_post_meta : false;
+
+			if (!$current_guide_translations) { continue; }
+
+			$current_guide_translations[$locale] = $updated_guide_translations;
+			update_post_meta( $post_id, 'translations', $current_guide_translations );
+			update_post_meta( $post_id, 'translations-last-sync', gmdate(DateTime::ISO8601, time()) );
+		}
+
+			return true;
+	}
+
 
 	/*
 		PRIVATE METHODS -----------------------------------------------

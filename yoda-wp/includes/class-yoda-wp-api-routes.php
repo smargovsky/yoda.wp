@@ -70,15 +70,15 @@ class Yoda_WP_API_Routes {
 	 */
 	public function rest_api_init () {
 
-		register_rest_route('api/v1', '/test/(?P<value>.*)', array(
-			'methods' => 'GET',
-			'callback' => [$this->api, 'get_test']
-		));
+		// register_rest_route('api/v1', '/test/(?P<value>.*)', array(
+		// 	'methods' => 'GET',
+		// 	'callback' => [$this->api, 'get_test']
+		// ));
 
-		register_rest_route('api/v1', '/posts', array(
-			'methods' => 'GET',
-			'callback' => [$this->api, 'get_posts']
-		));
+		// register_rest_route('api/v1', '/posts', array(
+		// 	'methods' => 'GET',
+		// 	'callback' => [$this->api, 'get_posts']
+		// ));
 
 		register_rest_route('api/v1', '/guides', array(
 			'methods' => 'POST',
@@ -90,11 +90,15 @@ class Yoda_WP_API_Routes {
 			'callback' => [$this->api, 'update_guide']
 		));
 
-		register_rest_route('api/v1', '/webhooks/bitbucket', array(
-			'methods' => 'GET,POST',
-			'callback' => [$this->api, 'webhooks_bitbucket']
+		register_rest_route('api/v1', '/en.json', array(
+			'methods' => 'GET',
+			'callback' => [$this->api, 'get_english_translations']
 		));
 
+		register_rest_route('api/v1', '/sync-translations/(?P<language>.*)', array(
+			'methods' => 'GET, POST',
+			'callback' => [$this->api, 'sync_guide_translations']
+		));
 
 	}
 }

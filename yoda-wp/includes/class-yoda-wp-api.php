@@ -42,7 +42,6 @@ class Yoda_WP_API {
 		 * The class that defines all the route callbacks
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-yoda-wp-api-db.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-yoda-wp-translations.php';
 	}
 
 	/**
@@ -110,64 +109,58 @@ class Yoda_WP_API {
 
 	}
 
-
-	/**
-	 * Bitbucket webhook fired - Pickup any new translations
-	 *
-   * 1. fetch newest version of master branch of yoda-translations
-   * 2. combine all translations languages into one master file keyed off post-slug
-   * 2.1.
-	 * {
-	 *   "post-slug-1": {
-	 *     "en": {
-	 *       "title": "...",
-	 *       "body": "..."
-	 *     },
-	 *     "de": {
-	 *       "title": "...",
-	 *       "body": "..."
-	 *     }
-	 *   },
-	 *   "post-slug-2": {
-	 *     "en": {
-	 *       "title": "...",
-	 *       "body": "..."
-	 *     },
-	 *     "de": {
-	 *       "title": "...",
-	 *       "body": "..."
-	 *     }
-	 *   }
-	 * }
-   * 3. Update all wordpress posts found in combined translations by setting their wp-meta[translations] data to the updated “all languages” object for each slug-id.
-	 *
-	 * @since    1.0.0
-	 */
-	public function webhooks_bitbucket ( WP_REST_Request $request ) {
-		error_log('BITBUCKET WEBHOOK HAPPENED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-
-		// TODO - implement fetching new translations data for all posts
-		$gitUsername = urlencode(getenv('GIT_USERNAME'));
-		$gitPassword = urlencode(getenv('GIT_PASSWORD'));
-		$gitRepo = "https://{$gitUsername}:{$gitPassword}@bitbucket.org/inindca/yoda-translations";
-
-		try {
-			$this->yoda_translations = new Yoda_WP_Translations($gitRepo);
-		} catch (Exception $e) {
-			return "Couldn't clone the repo at: {$gitRepo}, {$e->getMessage()}";
+	public function get_english_translations ( WP_REST_Request $request ) {
+		$is_authorized = $this->is_authorized($request);
+		if (!$is_authorized) {
+			return new WP_Error('yoda_wp__api_key_error',__('The API key is missing or invalid.'), ['status' => 401]);
 		}
 
 		try {
-			$sync_success = $this->yoda_translations->sync_post_translations();
-			if (!$sync_success) {
-				return "There was a problem syncing post translations: [Unknown error]";
-			}
+			$data = $this->db->get_guides_base_translations();
 		} catch (Exception $e) {
-			return "There was a problem syncing post translations: {$e->getMessage()}";
+			return new WP_Error('yoda_wp__error_pulling_guide_translations',__('There was a problem accessing the base guide translations.'), ['status' => 500]);
 		}
 
-		return "Successfully updated Yoda translations.";
+		$response = new WP_REST_Response( $data );
+		$response->header('Content-Type', 'application/json');
 
+		return $response;
+	}
+
+	public function sync_guide_translations ( WP_REST_Request $request ) {
+		$is_authorized = $this->is_authorized($request);
+		if (!$is_authorized) {
+			return new WP_Error('yoda_wp__api_key_error',__('The API key is missing or invalid.'), ['status' => 401]);
+		}
+
+		$language = strtolower($request->get_param( 'language' ));
+		$translations = $request->get_json_params();
+
+		if (!$language || !$translations) {
+			return new WP_Error('yoda_wp__missing_guide_info',__('The guide locale or translation data is missing.'), ['status' => 400]);
+		}
+
+		try {
+			return $this->db->sync_guide_translations($language, $translations);
+		} catch (Exception $e) {
+			return new WP_Error('yoda_wp__error_pulling_guide_translations',__("There was a problem accessing the base guide translations."), ['status' => 500]);
+		}
+	}
+
+	private function is_authorized ( WP_REST_Request $request ) {
+		$post_data = $request->get_json_params();
+		$post_api_key = (isset($post_data['api_key']) && $post_data['api_key']) ? $post_data['api_key'] : false;
+
+		$query_params = $request->get_query_params();
+		$get_api_key = isset($query_params['api_key']) ? $query_params['api_key'] : false;
+
+		$local_api_key = getenv('API_KEY');
+
+		if ($get_api_key === $local_api_key || $post_api_key === $local_api_key) {
+			return true;
+		}
+
+		return false;
 	}
 
 }

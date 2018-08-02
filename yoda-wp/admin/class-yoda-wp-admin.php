@@ -57,7 +57,6 @@ class Yoda_WP_Admin {
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-yoda-wp-api-db.php';
 		$this->db = new Yoda_WP_API_DB();
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-yoda-wp-translations.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-yoda-wp-util.php';
 	}
 
@@ -331,30 +330,6 @@ class Yoda_WP_Admin {
         }
 
 		$this->validate_meta( $_POST, $post_id, $object, $nonces, $fields);
-	}
-
-	function cpt_announcement_publish( $post_id, $object ) {
-		$gitUsername = urlencode(getenv('GIT_USERNAME'));
-		$gitPassword = urlencode(getenv('GIT_PASSWORD'));
-		$gitRepo = "https://{$gitUsername}:{$gitPassword}@bitbucket.org/inindca/yoda-translations";
-
-
-		if (!$gitUsername || !$gitPassword) {
-			return Yoda_WP::display_session_message("Missing Bitbucket username or password.", 'error');
-		}
-
-		try {
-			$this->yoda_translations = new Yoda_WP_Translations($gitRepo);
-			$didUpdate = $this->yoda_translations->update_repository($post_id, $_POST['post_title'], $_POST['post_content']);
-		} catch (Exception $e) {
-			return Yoda_WP::display_session_message($e->getMessage(), 'error');
-		}
-
-		if ($didUpdate) {
-			Yoda_WP::display_session_message('Yoda translations published to repository.', 'success');
-		} else {
-			Yoda_WP::display_session_message('Yoda translations updated, but there were no changes to publish.', 'success');
-		}
 	}
 
 	function admin_notices() {
