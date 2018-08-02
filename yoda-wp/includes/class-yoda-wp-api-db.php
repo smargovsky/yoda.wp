@@ -166,7 +166,9 @@ class Yoda_WP_API_DB {
 			$current_guide_translations_post_meta = current(get_post_meta( $post_id, 'translations' ));
 			$current_guide_translations = $current_guide_translations_post_meta ? $current_guide_translations_post_meta : false;
 
-			if (!$current_guide_translations) { continue; }
+			if (!$current_guide_translations) {
+				$current_guide_translations = [];
+			}
 
 			$current_guide_translations[$locale] = $updated_guide_translations;
 			update_post_meta( $post_id, 'translations', $current_guide_translations );
