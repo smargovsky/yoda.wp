@@ -313,8 +313,9 @@ class Yoda_WP_API_DB {
 							'type' => $x['post_type'],
 							'displayType' => isset($x['meta']['announcement-type']) ? current($x['meta']['announcement-type']) : '',
 							'meta' => [
-								'featureToggles' => $this->getFeatureTogglesFromMeta($x['meta'], 'announcement'),
+								'environments' => $this->getEnvironmentsMeta($x['meta'], 'announcement'),
 								'regions' => $this->getRegionFromMeta($x['meta'], 'announcement'),
+								'featureToggles' => $this->getFeatureTogglesFromMeta($x['meta'], 'announcement'),
 								'permissions' => $this->getPermissionsFromMeta($x['meta'], 'announcement')
 							],
 							'created' => $x['post_date'],
@@ -348,6 +349,12 @@ class Yoda_WP_API_DB {
 					break;
 			}
 		}, $posts);
+	}
+
+	private function getEnvironmentsMeta($meta, $type) {
+		$envMeta = isset($meta["{$type}-region"]) ? unserialize(current($meta["{$type}-env"])) : false;
+		$envs = $envMeta ? unserialize($envMeta) : false;
+		return $envs ? array_keys($envs) : [];
 	}
 
 	private function getRegionFromMeta($meta, $type) {

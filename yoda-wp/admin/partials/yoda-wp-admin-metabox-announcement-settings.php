@@ -58,22 +58,26 @@ include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-select
 // ---------------------------- announcement-env ---------------------------------------
 ?><p><label>Environments</label></p><?php
 
-$envs = array('dca', 'tca', 'prod');
+$envs = [
+    'dca'=> 'Development',
+    'tca'=> 'Test',
+    'prod' => 'Production'
+];
 if ( ! empty( $this->meta['announcement-env'][0] ) ) {
-    $value = maybe_unserialize( unserialize($this->meta['announcement-env'][0]) );
+    $env_meta_values = maybe_unserialize( unserialize($this->meta['announcement-env'][0]) );
 } else {
-    $value = array();
+    $env_meta_values = array();
 }
-foreach ($envs as $env) {
+foreach ($envs as $env_key => $env_value) {
     $atts                   = array();
     $atts['class']          = '';
     $atts['description']    = '';
-    $atts['id']             = 'announcement-env-' . $env;
-    $atts['label']          = $env;
-    $atts['name']           = 'announcement-env-' . $env;
+    $atts['id']             = 'announcement-env-' . $env_key;
+    $atts['label']          = $env_value;
+    $atts['name']           = 'announcement-env-' . $env_key;
     $atts['placeholder']    = '';
     $atts['type']           = 'checkbox';
-    $atts['value']          = array_key_exists($env, $value) ? $value[$env] : 0;
+    $atts['value']          = array_key_exists($env_key, $env_meta_values) ? $env_meta_values[$env_key] : 0;
 
     apply_filters( $this->plugin_name . '-field-' . $atts['id'], $atts );
     ?><p><?php
