@@ -55,6 +55,32 @@ apply_filters( $this->plugin_name . '-field-' . $atts['id'], $atts );
 include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-select.php' );
 ?></p><?php
 
+// ---------------------------- announcement-env ---------------------------------------
+?><p><label>Environments</label></p><?php
+
+$envs = array('dca', 'tca', 'prod');
+if ( ! empty( $this->meta['announcement-env'][0] ) ) {
+    $value = maybe_unserialize( unserialize($this->meta['announcement-env'][0]) );
+} else {
+    $value = array();
+}
+foreach ($envs as $env) {
+    $atts                   = array();
+    $atts['class']          = '';
+    $atts['description']    = '';
+    $atts['id']             = 'announcement-env-' . $env;
+    $atts['label']          = $env;
+    $atts['name']           = 'announcement-env-' . $env;
+    $atts['placeholder']    = '';
+    $atts['type']           = 'checkbox';
+    $atts['value']          = array_key_exists($env, $value) ? $value[$env] : 0;
+
+    apply_filters( $this->plugin_name . '-field-' . $atts['id'], $atts );
+    ?><p><?php
+    include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-checkbox.php' );
+    ?></p><?php
+}
+
 // --------------------------- announcement-selector -------------------------------------
 
 $atts                   = array();

@@ -318,6 +318,7 @@ class Yoda_WP_Admin {
         $fields[] = array('announcement-permissions', 'text');
         $fields[] = array('announcement-feature-toggles', 'text');
         $fields[] = array('announcement-region', 'array');
+        $fields[] = array('announcement-env', 'array');
 
         // take all announcement-region-* and combine into array announcement-region
         $_POST['announcement-region'] = array();
@@ -326,6 +327,16 @@ class Yoda_WP_Admin {
             $key = 'announcement-region-' . $region;
             if (array_key_exists($key, $_POST)) {
                 $_POST['announcement-region'][$region] = $_POST[$key];
+            }
+        }
+
+        // take all announcement-env-* and combine into array announcement-env
+        $_POST['announcement-env'] = array();
+        $envs = array('dca', 'tca', 'prod');
+        foreach ($envs as $env) {
+            $key = 'announcement-env-' . $env;
+            if (array_key_exists($key, $_POST)) {
+                $_POST['announcement-env'][$env] = $_POST[$key];
             }
         }
 
