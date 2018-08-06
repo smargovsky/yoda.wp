@@ -28,7 +28,7 @@ $langs = [
     ['code' => 'pl', 'display' => 'Polish'],
     ['code' => 'pt-br', 'display' => 'Portuguese (Brazil)'],
     ['code' => 'sv', 'display' => 'Swedish'],
-    ['code' => 'th', 'display' => 'Thai'],
+    // ['code' => 'th', 'display' => 'Thai'],
     ['code' => 'tr', 'display' => 'Turkish'],
     ['code' => 'zh-cn', 'display' => 'Chinese (S)'],
     ['code' => 'zh-tw', 'display' => 'Chinese (T)']
