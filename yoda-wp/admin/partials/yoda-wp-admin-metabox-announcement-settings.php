@@ -14,25 +14,6 @@ $this->meta = get_post_custom( $post->ID );
 
 wp_nonce_field( $this->plugin_name, 'announcement-settings' );
 
-// --------------------------- announcement-url -------------------------------------
-
-$atts                   = array();
-$atts['class']          = 'widefat';
-$atts['description']    = '';
-$atts['id']             = 'url-for-iframe';
-$atts['label']          = 'URL';
-$atts['name']           = 'announcement-url';
-$atts['placeholder']    = '';
-$atts['type']           = 'text';
-$atts['value']          = '';
-if ( ! empty( $this->meta[$atts['name']][0] ) ) {
-    $atts['value'] = $this->meta[$atts['name']][0];
-}
-apply_filters( $this->plugin_name . '-field-' . $atts['name'], $atts );
-?><p><?php
-include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-text.php' );
-?></p><?php
-
 // ----------------------------- announcement-type ---------------------------------------
 
 $atts                               = array();
@@ -54,6 +35,13 @@ apply_filters( $this->plugin_name . '-field-' . $atts['id'], $atts );
 ?><p><?php
 include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-select.php' );
 ?></p><?php
+
+// ----------------------------- open iframe btn -----------------------------------------
+?>
+<p>
+    <button id="open-iframe" class="button button-primary button-large">Select Page / Element</button>
+</p>
+<?php
 
 // ---------------------------- announcement-env ---------------------------------------
 ?><p><label>Environments</label></p><?php
@@ -84,6 +72,25 @@ foreach ($envs as $env_key => $env_value) {
     include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-checkbox.php' );
     ?></p><?php
 }
+// --------------------------- announcement-url -------------------------------------
+
+$atts                   = array();
+$atts['class']          = 'widefat';
+$atts['description']    = '';
+$atts['id']             = 'announcement-url';
+$atts['label']          = 'URL';
+$atts['name']           = 'announcement-url';
+$atts['placeholder']    = '';
+$atts['type']           = 'text';
+$atts['value']          = '';
+$atts['readonly']       = true;
+if ( ! empty( $this->meta[$atts['name']][0] ) ) {
+    $atts['value'] = $this->meta[$atts['name']][0];
+}
+apply_filters( $this->plugin_name . '-field-' . $atts['name'], $atts );
+?><p><?php
+include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-text.php' );
+?></p><?php
 
 // --------------------------- announcement-selector -------------------------------------
 
@@ -95,8 +102,8 @@ $atts['label']          = 'Select Element on Page';
 $atts['name']           = 'announcement-selector';
 $atts['placeholder']    = '';
 $atts['type']           = 'text';
-$atts['icon']           = 'element-selection-mode dashicons dashicons-external';
 $atts['value']          = '';
+$atts['readonly']       = true;
 if ( ! empty( $this->meta[$atts['id']][0] ) ) {
     $atts['value'] = $this->meta[$atts['id']][0];
 }
@@ -125,5 +132,13 @@ include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-checkb
 ?></p>
 
 <div id="dialog-for-iframe">
+    <p>
+        <select name="url-for-iframe" id="url-for-iframe">
+            <option value="https://localhost:4300/dca" selected="selected">Localhost</option>
+            <option value="https://apps.inindca.com">DCA</option>
+            <option value="https://apps.inintca.com">TCA</option>
+            <option value="https://apps.mypurecloud.com">Production</option>
+        </select>
+    </p>
     <iframe id="iframe-for-element-selection" name="iframe-for-element-selection" seamless="seamless" width='800' height='800'></iframe>
 </div>

@@ -16,7 +16,8 @@ if ( ! empty( $atts['label'] ) ) {
     name="<?php echo esc_attr( $atts['name'] ); ?>"
     placeholder="<?php echo esc_attr( $atts['placeholder'] ); ?>"
     type="<?php echo esc_attr( $atts['type'] ); ?>"
-    value="<?php echo esc_attr( $atts['value'] ); ?>" /><?php
+    value="<?php echo esc_attr( $atts['value'] ); ?>"
+    <?php if ( ! empty( $atts['readonly'] ) ) { ?> readonly <?php } ?> /><?php
 if ( ! empty( $atts['icon'] ) ) {
     ?><span class="<?php echo esc_attr( $atts['icon'] ); ?>"></span><?php
 }

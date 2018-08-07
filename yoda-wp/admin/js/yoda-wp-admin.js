@@ -87,27 +87,15 @@
 		});
 	});
 
-  /**
-    * Hide selector if type is toast
-    *
-    */
 
-  $('#announcement-type').change(function() {
-    var value = $( this ).val();
-    if (value === 'toast') {
-      $('#announcement-selector').val();
-      $('#announcement-selector').prop("disabled", true).addClass("ui-state-disabled");
-    } else if (value === 'pop-up') {
-      $('#announcement-selector').prop("disabled", false).removeClass("ui-state-disabled");
-    }
-  });
-
+  var selectorInput = $('#announcement-selector');
+  var urlInput = $('#announcement-url');
   /**
    * Dialogue for Iframe!
    */
-  var selectorInput = null;
+
   $('#dialog-for-iframe').dialog({
-    title: 'Select Page Element',
+    title: 'Select Page / Element',
     dialogClass: 'wp-dialog',
     autoOpen: false,
     draggable: false,
@@ -121,6 +109,15 @@
       of: window
     },
     buttons: [
+      {
+        id: 'url-selection-mode',
+        text: 'Use Current Page',
+        click: function() {
+          // send PM to iFrame - yodaMessage: 'select-mode'
+          var message = { 'yodaMessage': 'url-mode' };
+          $('#iframe-for-element-selection')[0].contentWindow.postMessage(message, '*');
+        }
+      },
       {
         id: 'selection-mode',
         text: 'Select Element',
@@ -139,12 +136,18 @@
       }
     ],
     open: function () {
+      // Buttons based on type
+      if ($('#announcement-type').val() === 'toast') {
+        $('#selection-mode').hide();
+        $('#save-selection').hide();        
+      } else {
+        $('#url-selection-mode').hide();
+        $('#selection-mode').prop("disabled", true).addClass("ui-state-disabled");
+      }
       // close dialog by clicking the overlay behind it
       $('.ui-widget-overlay').bind('click', function(){
         $('#dialog-for-iframe').dialog('close');
       });
-      // disable selection button
-      $('#selection-mode').prop("disabled", true).addClass("ui-state-disabled");
 
       // get URL for iFrame and set it
       $('#iframe-for-element-selection').attr('src', $('#url-for-iframe').val());
@@ -153,9 +156,14 @@
       var message = { 'yodaMessage': 'init' };
       $('#iframe-for-element-selection')[0].contentWindow.postMessage(message, '*');
 
+      // env change selection
+      $('#url-for-iframe').change(function(e) {
+        $('#iframe-for-element-selection').attr('src', $( this ).val());
+        $('#iframe-for-element-selection')[0].contentWindow.postMessage(message, '*');
+      });
+
       // wait for PostMessage from iFrame - yodaMessage: 'iframe-ready'
       let handle = function(event) {
-        console.log(' ********* POST MESSAGE EVENT', event);
         var { source, data } = event.originalEvent;
         if ( data.yodaMessage ) {
           if ( data.yodaMessage === 'iframe-ready' ) {
@@ -169,7 +177,11 @@
             $('#save-selection').prop("disabled", false).removeClass("ui-state-disabled");
 
             // get correct element for repeater
-            $(selectorInput).val( data.yodaMessageSelector );
+            selectorInput.val( data.yodaMessageSelector );
+            urlInput.val( data.yodaMessageUrl );
+          } else if ( data.yodaMessage === 'return-url' ) {
+            urlInput.val( data.yodaMessageUrl );
+            $('#dialog-for-iframe').dialog('close');
           }
         }
       }
@@ -184,13 +196,10 @@
       $(window).off('message');
     }
   });
-  // bind a button or a link to open the dialog
-  $('.element-selection-mode').click(function(e) {
-    if ($('#announcement-selector').prop("disabled")) {
-      return;
-    }
-    e.preventDefault();
-    selectorInput = $(e.target).siblings('input')[0];
+  // bind a button  to open the dialog
+  $('#open-iframe').click(function(e) {
+    e.preventDefault(); //KEY b/c wp thinks this is a save button
+    
     $('#dialog-for-iframe').dialog('open');
   });
 
