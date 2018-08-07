@@ -133,10 +133,11 @@ include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-checkb
 
 <div id="dialog-for-iframe">
     <p>
+        <label for="url-for-iframe">Select App Environment</label>
         <select name="url-for-iframe" id="url-for-iframe">
             <option value="https://localhost:4300/dca" selected="selected">Localhost</option>
-            <option value="https://apps.inindca.com">DCA</option>
-            <option value="https://apps.inintca.com">TCA</option>
+            <option value="https://apps.inindca.com">Development</option>
+            <option value="https://apps.inintca.com">Testing</option>
             <option value="https://apps.mypurecloud.com">Production</option>
         </select>
     </p>

@@ -284,7 +284,7 @@ class Yoda_WP {
 			$dotenv = new Dotenv\Dotenv(plugin_dir_path( dirname( __FILE__ ) ));
 			$dotenv->load();
 		} catch  (Dotenv\Exception\InvalidPathException $e) {
-			Yoda_WP::display_notice_message('Uhoh, YODA is missing its .env file!', 'error');
+			Yoda_WP::display_notice_message("Uhoh, YODA is missing its .env file!", 'error');
 		}
 	}
 
