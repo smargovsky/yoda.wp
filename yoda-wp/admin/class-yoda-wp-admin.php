@@ -332,7 +332,7 @@ class Yoda_WP_Admin {
 
         // take all announcement-env-* and combine into array announcement-env
         $_POST['announcement-env'] = array();
-        $envs = array('dca', 'tca', 'prod');
+        $envs = array('dca', 'tca', 'pca');
         foreach ($envs as $env) {
             $key = 'announcement-env-' . $env;
             if (array_key_exists($key, $_POST)) {

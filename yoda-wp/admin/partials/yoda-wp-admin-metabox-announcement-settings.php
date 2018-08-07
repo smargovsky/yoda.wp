@@ -49,7 +49,7 @@ include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-select
 $envs = [
     'dca'=> 'Development',
     'tca'=> 'Test',
-    'prod' => 'Production'
+    'pca' => 'Production'
 ];
 if ( ! empty( $this->meta['announcement-env'][0] ) ) {
     $env_meta_values = maybe_unserialize( unserialize($this->meta['announcement-env'][0]) );
