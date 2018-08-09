@@ -322,7 +322,7 @@ class Yoda_WP_Admin {
 
         // take all announcement-region-* and combine into array announcement-region
         $_POST['announcement-region'] = array();
-        $regions = array('us-east-1', 'eu-west-1', 'eu-central-1', 'ap-southeast-2', 'ap-northeast-1');
+        $regions = array('us', 'ie', 'de', 'jp', 'au');
         foreach ($regions as $region) {
             $key = 'announcement-region-' . $region;
             if (array_key_exists($key, $_POST)) {

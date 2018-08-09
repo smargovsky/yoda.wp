@@ -17,7 +17,7 @@ wp_nonce_field( $this->plugin_name, 'announcement-targeting' );
 // ---------------------------- announcement-region ---------------------------------------
 ?><p><label>Regions</label></p><?php
 
-$regions = array('us-east-1', 'eu-west-1', 'eu-central-1', 'ap-southeast-2', 'ap-northeast-1');
+$regions = array('us', 'ie', 'de', 'jp', 'au');
 if ( ! empty( $this->meta['announcement-region'][0] ) ) {
     $value = maybe_unserialize( unserialize($this->meta['announcement-region'][0]) );
 } else {
