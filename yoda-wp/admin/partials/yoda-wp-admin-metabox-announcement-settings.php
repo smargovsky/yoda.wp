@@ -39,7 +39,7 @@ include( plugin_dir_path( __FILE__ ) . $this->plugin_name . '-admin-field-select
 // ----------------------------- open iframe btn -----------------------------------------
 ?>
 <p>
-    <button id="open-iframe" class="button button-primary button-large">Select Page / Element</button>
+    <button type="button" id="open-iframe" class="button button-primary button-large">Select Page / Element</button>
 </p>
 <?php
 
